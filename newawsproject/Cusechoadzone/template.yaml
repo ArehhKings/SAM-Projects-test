@@ -1,0 +1,120 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  cloudpactai-cusechoadzone
+
+  Sample SAM Template for cloudpactai-cusechoadzone
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+
+Globals:
+  Function:
+    Timeout: 10
+    MemorySize: 128
+
+Resources:
+  FetchAllUsers:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: user-api/
+      Handler: app.FetchAllUsers
+      Runtime: nodejs16.x
+      Architectures:
+        - x86_64
+      Events:
+        GetUser:
+          Type: Api
+          Properties:
+            Path: /api/users
+            Method: GET
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UserTable
+  GetUser:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: user-api/
+      Handler: app.GetUser
+      Runtime: nodejs16.x
+      Architectures:
+        - x86_64
+      Events:
+        UpdateUser:
+          Type: Api
+          Properties:
+            Path: /api/users/{id}
+            Method: GET
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UserTable
+
+  CreateUser:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: user-api/
+      Handler: app.CreateUser
+      Runtime: nodejs16.x
+      Architectures:
+        - x86_64
+      Events:
+        CreateUser:
+          Type: Api
+          Properties:
+            Path: /api/users
+            Method: POST
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UserTable
+  DeleteUser:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: user-api/
+      Handler: app.DeleteUser
+      Runtime: nodejs16.x
+      Architectures:
+        - x86_64
+      Events:
+        UpdateUser:
+          Type: Api
+          Properties:
+            Path: /api/users/{id}
+            Method: DELETE
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UserTable
+  UpdateUser:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: user-api/
+      Handler: app.UpdateUser
+      Runtime: nodejs16.x
+      Architectures:
+        - x86_64
+      Events:
+        UpdateUser:
+          Type: Api
+          Properties:
+            Path: /api/users/{id}
+            Method: PUT
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UserTable
+
+  UserTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: adzone-userDB
+      AttributeDefinitions:
+        - AttributeName: userId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: userId
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
+
+Outputs:
+  WebEndpoint:
+    Description: "Rest Api"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
