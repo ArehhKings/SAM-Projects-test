@@ -136,11 +136,12 @@ export async function UpdateUser(event, context) {
 }
 
 export async function DeleteUser(event, context) {
+  const id = event.pathParameters.id;
   try {
     const data = await ddbDocClient.delete({
       TableName: "usersDB",
       Key: {
-        id: event.pathParameters.id,
+        id: id,
       },
     });
 
