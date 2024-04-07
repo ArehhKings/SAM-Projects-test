@@ -35,8 +35,7 @@ export async function CreateUser(event, context) {
       TableName: "usersDB",
       Item: {
         id: uuidv4(),
-        firstName,
-        lastName,
+        fullName: firstName + " " + lastName,
         email,
         phoneNo,
         address,
