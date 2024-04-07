@@ -1,0 +1,110 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'lambda-dynamodb
+
+  Sample SAM Template for lambda-dynamodb
+
+  '
+Globals:
+  Function:
+    Timeout: 10
+    MemorySize: 128
+Resources:
+  FetchAllUsers:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: FetchAllUsers
+      Handler: app.FetchAllUsers
+      Runtime: nodejs16.x
+      Architectures:
+      - x86_64
+      Events:
+        FetchAllUsers:
+          Type: Api
+          Properties:
+            Path: /api/users
+            Method: GET
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: UserTable
+    Metadata:
+      SamResourceId: FetchAllUsers
+  CreateUser:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: CreateUser
+      Handler: app.CreateUser
+      Runtime: nodejs16.x
+      Architectures:
+      - x86_64
+      Events:
+        CreateUser:
+          Type: Api
+          Properties:
+            Path: /api/users
+            Method: POST
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: UserTable
+    Metadata:
+      SamResourceId: CreateUser
+  DeleteUser:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: DeleteUser
+      Handler: app.DeleteUser
+      Runtime: nodejs16.x
+      Architectures:
+      - x86_64
+      Events:
+        DeleteUser:
+          Type: Api
+          Properties:
+            Path: /api/users/{id}
+            Method: DELETE
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: UserTable
+    Metadata:
+      SamResourceId: DeleteUser
+  UpdateUser:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: UpdateUser
+      Handler: app.UpdateUser
+      Runtime: nodejs16.x
+      Architectures:
+      - x86_64
+      Events:
+        UpdateUser:
+          Type: Api
+          Properties:
+            Path: /api/users/{id}
+            Method: PUT
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: UserTable
+    Metadata:
+      SamResourceId: UpdateUser
+  UserTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: usersDB
+      AttributeDefinitions:
+      - AttributeName: id
+        AttributeType: S
+      KeySchema:
+      - AttributeName: id
+        KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
+Outputs:
+  WebEndpoint:
+    Description: Rest Api
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/
