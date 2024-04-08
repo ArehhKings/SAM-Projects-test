@@ -46,7 +46,7 @@ export async function CreateUser(event, context) {
       statusCode: 201,
       body: JSON.stringify({
         statusCode: 201,
-        message: "User is created successfully",
+        message: "User has been created successfully",
       }),
     };
   } catch (error) {

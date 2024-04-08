@@ -148,7 +148,7 @@ export async function DeleteUser(event, context) {
     response = {
       statusCode: 200,
       body: JSON.stringify({
-        message: "User is successfully deleted",
+        message: "User has besn successfully deleted",
       }),
     };
   } catch (error) {
