@@ -48,7 +48,7 @@ export async function CreateUser(event, context) {
       statusCode: 201,
       body: JSON.stringify({
         statusCode: 201,
-        message: "User is created successfully",
+        message: "User has been created successfully",
       }),
     };
   } catch (error) {
@@ -59,13 +59,13 @@ export async function CreateUser(event, context) {
 }
 
 export async function GetUser(event, context) {
-  const userId = event.pathParameters.id;
+  const Id = event.pathParameters.id;
 
   try {
     const data = await ddbDocClient.get({
       TableName: "adzone-userDB",
       Key: {
-        id: userId,
+        id: Id,
       },
     });
 
