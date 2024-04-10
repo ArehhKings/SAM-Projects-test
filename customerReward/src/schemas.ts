@@ -1,51 +1,51 @@
 import Joi from 'joi';
 import Ajv, { ErrorObject, Schema } from 'ajv';
 
-interface ValidationError {
-    message: string;
-    name: string;
-}
+// interface ValidationError {
+//     message: string;
+//     name: string;
+// }
 
-const ajv = new Ajv({ allErrors: true });
+// const ajv = new Ajv({ allErrors: true });
 
-const Validate = (body: any, schema: Schema): ValidationError[] | true => {
-    const validate = ajv.compile(schema);
-    const valid = validate(body);
+// const Validate = (body: any, schema: Schema): ValidationError[] | true => {
+//     const validate = ajv.compile(schema);
+//     const valid = validate(body);
 
-    if (!valid) {
-        const validationErrors: ValidationError[] = (validate.errors || []).map((error: ErrorObject) => {
-            let errorObject: ValidationError = { message: '', name: '' };
+//     if (!valid) {
+//         const validationErrors: ValidationError[] = (validate.errors || []).map((error: ErrorObject) => {
+//             let errorObject: ValidationError = { message: '', name: '' };
 
-            switch (error.keyword) {
-                case 'required':
-                    errorObject = {
-                        message: `${error.params.missingProperty} is required.`,
-                        name: error.params.missingProperty,
-                    };
-                    break;
-                case 'type':
-                    errorObject = {
-                        message: `${error.instancePath.split('/')[1]} ${error.message}.`,
-                        name: error.instancePath.split('/')[1],
-                    };
-                    break;
-                default:
-                    errorObject = {
-                        message: `${error.instancePath.split('/')[1]} is invalid.`,
-                        name: error.instancePath.split('/')[1],
-                    };
-            }
+//             switch (error.keyword) {
+//                 case 'required':
+//                     errorObject = {
+//                         message: `${error.params.missingProperty} is required.`,
+//                         name: error.params.missingProperty,
+//                     };
+//                     break;
+//                 case 'type':
+//                     errorObject = {
+//                         message: `${error.instancePath.split('/')[1]} ${error.message}.`,
+//                         name: error.instancePath.split('/')[1],
+//                     };
+//                     break;
+//                 default:
+//                     errorObject = {
+//                         message: `${error.instancePath.split('/')[1]} is invalid.`,
+//                         name: error.instancePath.split('/')[1],
+//                     };
+//             }
 
-            return errorObject;
-        });
+//             return errorObject;
+//         });
 
-        return validationErrors;
-    }
+//         return validationErrors;
+//     }
 
-    return true;
-};
+//     return true;
+// };
 
-export default Validate;
+// export default Validate;
 
 export const vendorSchema = Joi.object({
     vendor_firstName: Joi.string().required(),
