@@ -1,0 +1,341 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  cloudpactai-cusecho-adzone-userdetail
+
+  Sample SAM Template for cloudpactai-cusecho-adzone-userdetail
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 10
+
+    # You can add LoggingConfig parameters such as the Logformat, Log Group, and SystemLogLevel or ApplicationLogLevel. Learn more here https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-resource-function.html#sam-function-loggingconfig.
+    LoggingConfig:
+      LogFormat: JSON
+Resources:
+  CreateCustomerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: app.createCustomerHandler
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      Events:
+        CreateUser:
+          Type: Api
+          Properties:
+            Path: /api/customer
+            Method: POST
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CustomerTable
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        # Sourcemap: true
+        EntryPoints:
+          - app.ts
+
+  GetCustomerFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: src/
+      Handler: app.getCustomerHandler
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      Events:
+        GetUser:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /api/customer/{id}
+            Method: GET
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CustomerTable
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        # Sourcemap: true
+        EntryPoints:
+          - app.ts
+
+  UpdateCustomerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: app.updateCustomerHandler
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      Events:
+        UpdateUser:
+          Type: Api
+          Properties:
+            Path: /api/customer/{id}
+            Method: POST
+            RequestParameters:
+              - method.request.querystring.update_customer_account_details
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CustomerTable
+
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        # Sourcemap: true
+        EntryPoints:
+          - app.ts
+
+  #==============Product Section================
+  CreateProductFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: app.creatProductHandler
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      Events:
+        CreateProduct:
+          Type: Api
+          Properties:
+            Path: /api/product
+            Method: POST
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProductTable
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        # Sourcemap: true
+        EntryPoints:
+          - app.ts
+
+  # GetProductFunction:
+  #   Type: AWS::Serverless::Function # More info about Function Resource:
+  #   Properties:
+  #     CodeUri: src/
+  #     Handler: app.getProductHandler
+  #     Runtime: nodejs18.x
+  #     Architectures:
+  #       - x86_64
+  #     Events:
+  #       GetProduct:
+  #         Type: Api # More info about API Event Source:
+  #         Properties:
+  #           Path: /api/product/{id}
+  #           Method: GET
+  #     Policies:
+  #       - DynamoDBCrudPolicy:
+  #           TableName: !Ref ProductTable
+  #   Metadata: # Manage esbuild properties
+  #     BuildMethod: esbuild
+  #     BuildProperties:
+  #       Minify: true
+  #       Target: es2020
+  #       # Sourcemap: true
+  #       EntryPoints:
+  #         - app_products.ts
+
+  GetSingleProductFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource:
+    Properties:
+      CodeUri: src/
+      Handler: app.getSingleProductHandler
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      Events:
+        GetProduct:
+          Type: Api # More info about API Event Source:
+          Properties:
+            Path: /api/product/{id}
+            Method: GET
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProductTable
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        # Sourcemap: true
+        EntryPoints:
+          - app.ts
+
+  # GetVendorProductFunction:
+  #   Type: AWS::Serverless::Function # More info about Function Resource:
+  #   Properties:
+  #     CodeUri: src/
+  #     Handler: app.getVendorProductHandler
+  #     Runtime: nodejs18.x
+  #     Architectures:
+  #       - x86_64
+  #     Events:
+  #       GetProduct:
+  #         Type: Api # More info about API Event Source:
+  #         Properties:
+  #           Path: /api/vendor/{id}
+  #           Method: GET
+  #     Policies:
+  #       - DynamoDBCrudPolicy:
+  #           TableName: !Ref ProductTable
+  #   Metadata: # Manage esbuild properties
+  #     BuildMethod: esbuild
+  #     BuildProperties:
+  #       Minify: true
+  #       Target: es2020
+  #       # Sourcemap: true
+  #       EntryPoints:
+  #         - app_products.ts
+
+  UpdateProductFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource:
+    Properties:
+      CodeUri: src/
+      Handler: app.updateProductHandler
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      Events:
+        GetProduct:
+          Type: Api # More info about API Event Source:
+          Properties:
+            Path: /api/product/{id}
+            Method: PUT
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProductTable
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        # Sourcemap: true
+        EntryPoints:
+          - app.ts
+
+  DeleteProductFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource:
+    Properties:
+      CodeUri: src/
+      Handler: app.deleteProductHandler
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      Events:
+        GetProduct:
+          Type: Api # More info about API Event Source:
+          Properties:
+            Path: /api/product/{id}
+            Method: DELETE
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProductTable
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        # Sourcemap: true
+        EntryPoints:
+          - app.ts
+  #==============Product Order Section================
+  OrderProductFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: app.productOrderHandler
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      Events:
+        CreateProductOrder:
+          Type: Api
+          Properties:
+            Path: /api/productOrder
+            Method: POST
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProductOrderTable
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        # Sourcemap: true
+        EntryPoints:
+          - app.ts
+
+  CustomerTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: cusecho-adzone-customerDB-table
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
+
+  ProductTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: cusecho-adzone-productDB-table
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
+
+  ProductOrderTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: cusecho-adzone-productOrderDB-table
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
+
+  ApplicationResourceGroup:
+    Type: AWS::ResourceGroups::Group
+    Properties:
+      Name: !Sub "ApplicationInsights-SAM-${AWS::StackName}"
+      ResourceQuery:
+        Type: CLOUDFORMATION_STACK_1_0
+  ApplicationInsightsMonitoring:
+    Type: AWS::ApplicationInsights::Application
+    Properties:
+      ResourceGroupName: !Ref ApplicationResourceGroup
+      AutoConfigurationEnabled: true
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+
+  WebEndpoint:
+    Description: "Rest Api"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
