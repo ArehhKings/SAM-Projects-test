@@ -1,0 +1,85 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  adzoneuser
+
+  Sample SAM Template for adzoneuser
+
+Globals:
+  Function:
+    Timeout: 10
+    MemorySize: 128
+
+Resources:
+  GetUser:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: adzone-userapi/
+      Handler: app.GetUser
+      Runtime: nodejs16.x
+      Architectures:
+        - x86_64
+      Events:
+        FetchAllUsers:
+          Type: Api
+          Properties:
+            Path: /api/users/{id}
+            Method: GET
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UserTable
+
+  CreateUser:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: adzone-userapi/
+      Handler: app.CreateUser
+      Runtime: nodejs16.x
+      Architectures:
+        - x86_64
+      Events:
+        CreateUser:
+          Type: Api
+          Properties:
+            Path: /api/users
+            Method: POST
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UserTable
+
+  UpdateUser:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: adzone-userapi/
+      Handler: app.UpdateUser
+      Runtime: nodejs16.x
+      Architectures:
+        - x86_64
+      Events:
+        UpdateUser:
+          Type: Api
+          Properties:
+            Path: /api/users/{id}
+            Method: PUT
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UserTable
+
+  UserTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Cusecho-adzoneuserDB
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
+
+Outputs:
+  WebEndpoint:
+    Description: "Rest Api"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
